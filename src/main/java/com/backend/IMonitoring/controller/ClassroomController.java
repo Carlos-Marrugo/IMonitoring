@@ -3,11 +3,13 @@ package com.backend.IMonitoring.controller;
 import com.backend.IMonitoring.model.Classroom;
 import com.backend.IMonitoring.dto.AvailabilityRequest;
 import com.backend.IMonitoring.service.ClassroomService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/classrooms")
@@ -15,25 +17,20 @@ import java.util.List;
 public class ClassroomController {
     private final ClassroomService classroomService;
 
-    //classrooms available now
-    @GetMapping("/available")
-    public ResponseEntity<List<Classroom>> getAvailableNow() {
-        return ResponseEntity.ok(classroomService.getAvailableNow());
-    }
-
-    //classrooms not available now
-    @GetMapping("/unavailable")
-    public ResponseEntity<List<Classroom>> getUnavailableNow() {
-        return ResponseEntity.ok(classroomService.getUnavailableNow());
-    }
-
     @PostMapping("/check")
-    public ResponseEntity<Boolean> checkAvailability(@RequestBody AvailabilityRequest request) {
-        return ResponseEntity.ok(
-                classroomService.checkAvailability(
-                        request.getClassroomId(),
-                )
-        );
+    public ResponseEntity<?> checkAvailability(@Valid @RequestBody AvailabilityRequest request) {
+        try {
+            boolean isAvailable = classroomService.checkAvailability(request);
+            return ResponseEntity.ok(Map.of(
+                    "available", isAvailable,
+                    "message", isAvailable ? "La sala está disponible." : "La sala no está disponible."
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Datos inválidos",
+                    "message", e.getMessage()
+            ));
+        }
     }
-
 }
+
