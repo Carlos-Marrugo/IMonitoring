@@ -1,7 +1,7 @@
 package com.backend.IMonitoring.controller;
 
 import com.backend.IMonitoring.model.Classroom;
-import com.backend.IMonitoring.model.ClassroomType;
+import com.backend.IMonitoring.dto.AvailabilityRequest;
 import com.backend.IMonitoring.service.ClassroomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +19,23 @@ public class ClassroomController {
     @GetMapping("/available")
     public ResponseEntity<List<Classroom>> getAvailableNow() {
         return ResponseEntity.ok(classroomService.getAvailableNow());
+    }
+
+    //classrooms not available now
+    @GetMapping("/unavailable")
+    public ResponseEntity<List<Classroom>> getUnavailableNow() {
+        return ResponseEntity.ok(classroomService.getUnavailableNow());
+    }
+
+    @PostMapping("/check")
+    public ResponseEntity<Boolean> checkAvailability(@RequestBody AvailabilityRequest request) {
+        return ResponseEntity.ok(
+                classroomService.checkAvailability(
+                        request.getClassroomId(),
+                        request.getStartTime(),
+                        request.getEndTime()
+                )
+        );
     }
 
 }
