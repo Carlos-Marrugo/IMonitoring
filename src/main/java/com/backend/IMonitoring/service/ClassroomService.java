@@ -14,15 +14,18 @@ import java.util.List;
 public class ClassroomService {
     private final ClassroomRepository classroomRepository;
 
-    public List<Classroom> getAvailableClassrooms(
-            LocalDateTime start,
-            LocalDateTime end,
-            String building,
-            ClassroomType type
-    ) {
-        if (Duration.between(start, end).toHours() != 2) {
-            throw new IllegalArgumentException("Time block must be exactly 2 hours.");
+    public List<Classroom> getAvailableNow() {
+        return classroomRepository.findAvailableNow();
+    }
+
+    public List<Classroom> getUnavailableNow() {
+        return classroomRepository.findUnavailableNow();
+    }
+
+    public boolean checkAvailability(String classroomId, LocalDateTime startTime, LocalDateTime endTime) {
+        if (startTime.isAfter(endTime)) {
+            throw new IllegalArgumentException("La hora de inicio debe ser antes que la hora de fin.");
         }
-        return classroomRepository.findAvailableClassrooms(start, end, building, type);
+        return classroomRepository.isAvailable(classroomId, startTime, endTime);
     }
 }
