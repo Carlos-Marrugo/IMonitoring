@@ -1,9 +1,9 @@
 package com.backend.IMonitoring.dto;
 
 
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 
 @Data

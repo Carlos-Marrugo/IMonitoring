@@ -32,8 +32,6 @@ public class ClassroomController {
         return ResponseEntity.ok(
                 classroomService.checkAvailability(
                         request.getClassroomId(),
-                        request.getStartTime(),
-                        request.getEndTime()
                 )
         );
     }
