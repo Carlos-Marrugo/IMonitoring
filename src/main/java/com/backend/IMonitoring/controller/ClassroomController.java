@@ -15,15 +15,10 @@ import java.util.List;
 public class ClassroomController {
     private final ClassroomService classroomService;
 
+    //classrooms available now
     @GetMapping("/available")
-    public ResponseEntity<List<Classroom>> getAvailableClassrooms(
-            @RequestParam LocalDateTime start,
-            @RequestParam LocalDateTime end,
-            @RequestParam String building,
-            @RequestParam ClassroomType type
-    ) {
-        return ResponseEntity.ok(
-                classroomService.getAvailableClassrooms(start, end, building, type)
-        );
+    public ResponseEntity<List<Classroom>> getAvailableNow() {
+        return ResponseEntity.ok(classroomService.getAvailableNow());
     }
+
 }
