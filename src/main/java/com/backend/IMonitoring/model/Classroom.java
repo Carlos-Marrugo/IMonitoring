@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -15,15 +13,15 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Classroom {
     @Id
-    private String id; // Ej: "A101"
+    private String id;
 
     private String name;
     private Integer capacity;
 
     @Enumerated(EnumType.STRING)
-    private ClassroomType type; // AULA, LABORATORIO, AUDITORIO
+    private ClassroomType type;
 
-    private String resources; // "PROYECTOR,PC,AIRE"
+    private String resources;
 
     @ManyToOne
     @JoinColumn(name = "building_id")
