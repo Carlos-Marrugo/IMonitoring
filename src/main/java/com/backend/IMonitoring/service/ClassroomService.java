@@ -6,6 +6,7 @@ import com.backend.IMonitoring.model.ClassroomType;
 import com.backend.IMonitoring.repository.ClassroomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +18,10 @@ import java.util.List;
 public class ClassroomService {
     private final ClassroomRepository classroomRepository;
 
+    public List<Classroom> getAllClassrooms() {
+        return classroomRepository.findAll();
+    }
+
     public List<Classroom> getAvailableNow() {
         return classroomRepository.findAvailableNow();
     }
@@ -25,17 +30,45 @@ public class ClassroomService {
         return classroomRepository.findUnavailableNow();
     }
 
+    public List<Classroom> getClassroomsByType(ClassroomType type) {
+        return classroomRepository.findByType(type);
+    }
+
+    public List<Classroom> getClassroomsByMinCapacity(Integer minCapacity) {
+        return classroomRepository.findByCapacityGreaterThanEqual(minCapacity);
+    }
+
+    public Classroom getClassroomById(String id) {
+        return classroomRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Classroom not found"));
+    }
+
+    public Classroom createClassroom(Classroom classroom) {
+        return classroomRepository.save(classroom);
+    }
+
+    public Classroom updateClassroom(String id, Classroom classroom) {
+        Classroom existing = getClassroomById(id);
+        existing.setName(classroom.getName());
+        existing.setCapacity(classroom.getCapacity());
+        existing.setType(classroom.getType());
+        existing.setResources(classroom.getResources());
+        existing.setBuilding(classroom.getBuilding());
+        return classroomRepository.save(existing);
+    }
+
+    public void deleteClassroom(String id) {
+        classroomRepository.deleteById(id);
+    }
+
     public boolean checkAvailability(AvailabilityRequest request) {
-        // Validar formato de horas y fecha
         LocalDateTime start = parseDateTime(request.getDate(), request.getStartTime());
         LocalDateTime end = parseDateTime(request.getDate(), request.getEndTime());
 
-        // Validar que la hora de inicio sea antes que la de fin
         if (start.isAfter(end)) {
             throw new IllegalArgumentException("La hora de inicio debe ser antes que la hora de fin.");
         }
 
-        // 2 horas en la sala
         if (Duration.between(start, end).toHours() != 2) {
             throw new IllegalArgumentException("El bloque de tiempo debe ser de 2 horas exactas.");
         }

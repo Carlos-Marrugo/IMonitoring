@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Table(name = "users")
 @Data
@@ -25,5 +24,5 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Rol role; // ADMIN, PROFESOR, TUTOR, ESTUDIANTE
+    private Rol role;
 }
